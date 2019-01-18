@@ -1,31 +1,233 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@using MewToColViewWebApp.Models;
+@model IEnumerable<MewToColViewWebApp.Models.ex1table>
+
+@{
+	ViewBag.Title = "Home Page";
 }
 
+<style>
+	div {
+		display: inline-block;
+		_display: inline;
+	}
+
+	.col-num {
+		display: inline-block;
+		width: 50px;
+	}
+
+	.col-val {
+		display: inline-block;
+		width: 60px;
+	}
+
+	.col-time {
+		display: inline-block;
+		width: 200px;
+	}
+
+	.col-del {
+		display: inline-block;
+		width: 50px;
+	}
+
+	.col-text {
+		display: inline-block;
+		width: 200px;
+	}
+
+	.col-button2 {
+		display: inline-block;
+		width: 110px;
+	}
+</style>
+
+<h2>Index</h2>
+
+
+<!-- 追加 -->
+<dim>
+	<br>
+	@Html.ActionLink("追加", "Add", "Home", new { _name = "Text" }, null)
+</dim>
+&nbsp;
+
+<!-- 検索 -->
+<dim>
+	<p>
+		@using (Html.BeginForm(
+			"Search",
+			"Home",
+			null,
+			FormMethod.Post,
+			new { enctype = "multipart/form-data" }
+		))
+		{
+			<span class="col-text">
+				@Html.TextBox("keyword", "", new { maxlength = 10 })
+			</span>
+
+			<span class="col-button">
+				<input type="submit" value="Search" />
+			</span>
+		}
+	</p>
+
+</dim>
+
+
+<br><br>
+<!-- データベース表示項目のヘッダ -->
+	<div>
+		<span class="col-num">#</span>
+		<span class="col-time">time</span>
+		<span class="col-val">val1</span>
+		<span class="col-val">val2</span>
+		<span class="col-val">val3</span>
+		<span class="col-val">val4</span>
+		<span class="col-val">val5</span>
+		<span class="col-val">val6</span>
+		<span class="col-val">val7</span>
+		<span class="col-val">val8</span>
+		<span class="col-del"></span>
+		<span class="col-button"></span>
+		<!-- <span class="col-text">Edit Name</span> -->
+	</div>
+<br>
+<br>
+
+
+<!-- 検索結果がViewBag.isHitIdに入っていればそれのみを表示 -->
+<!-- データベースからの読み込み-->
+
+@{
+
+	int count = 0;
+	bool continue_flg = false;
+
+	foreach (ex1table table in Model)
+	{
+		count = count + 1;
+
+		if (TempData["isHitId"] is null)
+		{
+			//continue;
+		}
+		else
+		{
+			int[] searchHit = TempData["isHitId"] as int[];
+			if (searchHit.Length == 0)
+			{
+				continue;
+			}
+
+			foreach (var _id in searchHit)
+			{
+				if (_id == table.id)
+				{
+					continue_flg = false;
+					break;
+				}
+				else
+				{
+					continue_flg = true;
+				}
+			}
+
+			if (continue_flg == true)
+			{
+				continue_flg = false;
+				continue;
+			}
+		}
+
+
+		<div>
+			<p>
+				<a class="btn-default" role="button" href="@Url.Action("Details", "Home", new { num = count, id = table.id })" style="text-decoration:none;">
+
+
+					<span class="col-num">@count.ToString("0000")</span>
+					<span class="col-time">
+						@table.time.ToLongDateString()
+						@table.time.ToLongTimeString()
+					</span>
+					<span class="col-val">@table.val1</span>
+					<span class="col-val">@table.val2</span>
+					<span class="col-val">@table.val3</span>
+					<span class="col-val">@table.val4</span>
+					<span class="col-val">@table.val5</span>
+					<span class="col-val">@table.val6</span>
+					<span class="col-val">@table.val7</span>
+					<span class="col-val">@table.val8</span>
+				</a>
+
+				<span class="col-del">@Html.ActionLink("削除", "Delete", "Home", new { id = table.id }, null)</span>
+			</p>
+
+		</div>
+		<div>
+			<p>
+				<!--
+				@using (Html.BeginForm(
+					"Edit",
+					"Home",
+					new { id = table.id },
+					FormMethod.Post,
+					new { enctype = "multipart/form-data" }
+				))
+				{
+					<span class="col-text">
+						@Html.TextBox("val", "", new { maxlength = 10 })
+					</span>
+
+					<span class="col-button">
+						<input type="submit" value="Edit" />
+					</span>
+				}
+
+				-->
+			</p>
+		</div>
+		<BR />
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+	<h1>ASP.NET</h1>
+	<p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+	<p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+	<div class="col-md-4">
+		<h2>Getting started</h2>
+		<p>
+			ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
+			enables a clean separation of concerns and gives you full control over markup
+			for enjoyable, agile development.
+		</p>
+		<p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+	</div>
+	<div class="col-md-4">
+		<h2>Get more libraries</h2>
+		<p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+		<p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+	</div>
+	<div class="col-md-4">
+		<h2>Web Hosting</h2>
+		<p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+		<p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+	</div>
 </div>
